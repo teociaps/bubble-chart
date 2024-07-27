@@ -1,7 +1,7 @@
 {
   "name": "bubble-chart",
   "version": "1.0.0",
-  "description": "Create custom animated bubble charts",
+  "description": "Create custom bubble charts",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,5 +17,6 @@
   "dependencies": {
     "d3": "^7.9.0",
     "jsdom": "^24.1.1"
-  }
+  },
+  "repository": "https://github.com/teociaps/bubble-chart.git"
 }

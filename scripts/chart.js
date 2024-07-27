@@ -1,13 +1,13 @@
 const data = [
-  { language: 'JavaScript', bytes: 123456 },
-  { language: 'Python', bytes: 98765 },
-  { language: 'Java', bytes: 54321 },
-  { language: 'C++', bytes: 34567 },
-  { language: 'Ruby', bytes: 23456 },
-  { language: 'PHP', bytes: 12345 }
+  { name: 'JavaScript', value: 100 },
+  { name: 'Python', value: 90 },
+  { name: 'Java', value: 90 },
+  { name: 'C++', value: 75 },
+  { name: 'Ruby', value: 25 },
+  { name: 'PHP', value: 10 }
 ];
 
-const width = 800;
+const width = 500;
 const height = 600;
 const svg = d3.select('svg')
   .attr('width', width)
@@ -18,7 +18,7 @@ const bubble = d3.pack()
   .padding(1.5);
 
 const root = d3.hierarchy({ children: data })
-  .sum(d => d.bytes);
+  .sum(d => d.value);
 
 const nodes = bubble(root).leaves();
 
@@ -37,6 +37,6 @@ node.append('circle')
 node.append('text')
   .attr('dy', '.3em')
   .attr('text-anchor', 'middle')
-  .text(d => d.data.language)
+  .text(d => d.data.name)
   .style('fill', 'white')
   .style('font-size', d => d.r / 3);

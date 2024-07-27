@@ -1,2 +1,2 @@
 # bubble-chart
-Create custom animated bubble charts
+Create custom bubble charts
