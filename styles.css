@@ -10,12 +10,18 @@ body {
 svg {
   background-color: transparent;
   border: 1px solid #ccc;
+  width: 100%;
+}
+.svg--defs {
+  width: 0;
+  height: 0;
+  border: none;
 }
 
 .bubble {
   fill: steelblue;
   opacity: 0.7;
-  stroke: black;
+  /* stroke: black; */
   stroke-width: 1px;
 }
 
