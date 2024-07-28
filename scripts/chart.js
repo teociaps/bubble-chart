@@ -90,6 +90,7 @@ lightBottomMask.append('rect')
   .attr('width', '1')
   .attr('height', '1')
 
+  // TODO: fix colors which are not the same as example directly in html
 // Colors of bubble
 var colorRadialGradient = svgDefs.append('radialGradient')
   .attr('id', 'grad')
@@ -110,9 +111,10 @@ colorRadialGradient.append('stop')
   .attr('stop-color', 'yellow')
   .attr('class', 'stop-3');
 
-
-
+  
 // TODO: add title to svg
+
+// TODO: customize color per bubble through data array
 
 // Create bubble chart
 const width = 800;
@@ -141,9 +143,9 @@ node.append('ellipse')
   .attr('rx', d => d.r * 0.6)
   .attr('ry', d => d.r * 0.3)
   .attr('cx', 0)
-  .attr('cy', d => d.r * 0.6)
+  .attr('cy', d => d.r * -0.6)
   .attr('fill', 'url(#grad--spot)')
-  .attr('transform', 'rotate(-225)') // TODO: fix rotation -> to flip
+  .attr('transform', 'rotate(-45)')
   .attr('class', 'shape');
 node.append('circle')
   .attr('r', d => d.r)
@@ -163,9 +165,9 @@ node.append('ellipse')
   .attr('rx', d => d.r * 0.4)
   .attr('ry', d => d.r * 0.2)
   .attr('cx', 0)
-  .attr('cy', d => d.r * 0.6)
+  .attr('cy', d => d.r * -0.7)
   .attr('fill', 'url(#grad--spot)')
-  .attr('transform', 'rotate(-45)') // TODO: fix rotation -> to flip
+  .attr('transform', 'rotate(-225)')
   .attr('class', 'shape');
 node.append('circle')
   .attr('r', d => d.r)
