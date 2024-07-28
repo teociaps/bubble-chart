@@ -9,6 +9,7 @@ const data = [
   { name: 'C#', value: 37 }
 ];
 
+const createBubbleChart = (data, title) => {
 // Create svg definitions
 const svgDefs = d3.select('body')
   .append('svg')
@@ -110,9 +111,6 @@ colorLinearGradient.append('stop')
   .attr('stop-color', 'yellow')
   .attr('class', 'stop-3');
 
-  
-// TODO: add title to svg
-
 // TODO: customize color per bubble through data array
 
 // Create bubble chart
@@ -122,6 +120,15 @@ const svg = d3.select('body')
   .append('svg')
   .attr('width', width)
   .attr('height', height);
+
+  // Add title to SVG // TODO: make customizable (color etc.)
+  svg.append('text')
+    .attr('x', width / 2)
+    .attr('y', 20)
+    .attr('text-anchor', 'middle')
+    .style('font-size', '24px')
+    .style('font-weight', 'bold')
+    .text(title);
 
 const bubble = d3.pack()
   .size([width, height])
@@ -182,3 +189,7 @@ node.append('text')
   .text(d => d.data.name)
   .style('fill', 'white')
   .style('font-size', d => d.r / 3);
+}
+
+// Call the function with data and a custom title
+createBubbleChart(data, 'Test Custom Bubble Chart Title');
