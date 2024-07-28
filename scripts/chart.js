@@ -25,11 +25,11 @@ transpRadialGradient.append('stop')
 transpRadialGradient.append('stop')
   .attr('offset', '30%')
   .attr('stop-color', 'black')
-  .attr('stop-opacity', '.2');
+  .attr('stop-opacity', .2);
 transpRadialGradient.append('stop')
   .attr('offset', '97%')
   .attr('stop-color', 'white')
-  .attr('stop-opacity', '.4');
+  .attr('stop-opacity', .4);
 transpRadialGradient.append('stop')
   .attr('offset', '100%')
   .attr('stop-color', 'black');
@@ -39,8 +39,8 @@ var transparentMask = svgDefs.append('mask')
   .attr('maskContentUnits', 'objectBoundingBox');
 transparentMask.append('rect')
   .attr('fill', 'url(#grad--bw)')
-  .attr('width', '1')
-  .attr('height', '1');
+  .attr('width', 1)
+  .attr('height', 1);
 
 // Light spot
 var lightSpotRadialGradient = svgDefs.append('radialGradient')
@@ -50,11 +50,11 @@ var lightSpotRadialGradient = svgDefs.append('radialGradient')
 lightSpotRadialGradient.append('stop')
   .attr('offset', '10%')
   .attr('stop-color', 'white')
-  .attr('stop-opacity', '.7');
+  .attr('stop-opacity', .7);
 lightSpotRadialGradient.append('stop')
   .attr('offset', '70%')
   .attr('stop-color', 'white')
-  .attr('stop-opacity', '0');
+  .attr('stop-opacity', 0);
 
 // Top & bottom light
 var topAndBottomLightRadialGradient = svgDefs.append('radialGradient')
@@ -64,11 +64,11 @@ var topAndBottomLightRadialGradient = svgDefs.append('radialGradient')
 topAndBottomLightRadialGradient.append('stop')
   .attr('offset', '60%')
   .attr('stop-color', 'black')
-  .attr('stop-opacity', '0');
+  .attr('stop-opacity', 0);
 topAndBottomLightRadialGradient.append('stop')
   .attr('offset', '90%')
   .attr('stop-color', 'white')
-  .attr('stop-opacity', '.25');
+  .attr('stop-opacity', .25);
 topAndBottomLightRadialGradient.append('stop')
   .attr('offset', '100%')
   .attr('stop-color', 'black');
@@ -78,8 +78,8 @@ var lightTopMask = svgDefs.append('mask')
   .attr('maskContentUnits', 'objectBoundingBox');
 lightTopMask.append('rect')
   .attr('fill', 'url(#grad--bw-light)')
-  .attr('width', '1')
-  .attr('height', '1')
+  .attr('width', 1)
+  .attr('height', 1)
   .attr('transform', 'rotate(180, .5, .5)');
 
 var lightBottomMask = svgDefs.append('mask')
@@ -87,26 +87,25 @@ var lightBottomMask = svgDefs.append('mask')
   .attr('maskContentUnits', 'objectBoundingBox');
 lightBottomMask.append('rect')
   .attr('fill', 'url(#grad--bw-light)')
-  .attr('width', '1')
-  .attr('height', '1')
+  .attr('width', 1)
+  .attr('height', 1);
 
-  // TODO: fix colors which are not the same as example directly in html
 // Colors of bubble
-var colorRadialGradient = svgDefs.append('radialGradient')
+var colorLinearGradient = svgDefs.append('linearGradient')
   .attr('id', 'grad')
-  .attr('x1', '0')
+  .attr('x1', 0)
   .attr('y1', '100%')
   .attr('x2', '100%')
-  .attr('y2', '0');
-colorRadialGradient.append('stop')
+  .attr('y2', 0);
+colorLinearGradient.append('stop')
   .attr('offset', '0')
   .attr('stop-color', 'dodgerblue')
   .attr('class', 'stop-1');
-colorRadialGradient.append('stop')
+colorLinearGradient.append('stop')
   .attr('offset', '50%')
   .attr('stop-color', 'fuchsia')
   .attr('class', 'stop-2');
-colorRadialGradient.append('stop')
+colorLinearGradient.append('stop')
   .attr('offset', '100%')
   .attr('stop-color', 'yellow')
   .attr('class', 'stop-3');
