@@ -9,6 +9,8 @@ const data = [
   { name: 'C#', value: 37, color: 'cyan' }
 ];
 
+// TODO: add settings for bubbles style (3d, flat, shadow, etc..)
+
 const createBubbleChart = (data, title) => {
   // Create svg definitions
   const svgDefs = d3.select('body')
@@ -140,7 +142,7 @@ const createBubbleChart = (data, title) => {
   const node = svg.selectAll('.node')
     .data(nodes)
     .enter().append('g')
-    .attr('class', 'node')
+    .attr('class', 'bubble')
     .attr('transform', d => `translate(${d.x},${d.y})`);
 
   node.append('ellipse')
@@ -162,7 +164,7 @@ const createBubbleChart = (data, title) => {
     .attr('r', d => d.r)
     .attr('cx', 0)
     .attr('cy', 0)
-    .attr('fill', 'gray') //yellow
+    .attr('fill', 'lightblue') //yellow
     .attr('mask', 'url(#mask--light-top)')
     .attr('class', 'shape');
   node.append('ellipse')
@@ -187,6 +189,56 @@ const createBubbleChart = (data, title) => {
     .text(d => d.data.name)
     .style('fill', 'white')
     .style('font-size', d => d.r / 3);
+
+  // TODO: choose animation or make it customizable(?)
+
+  // 1st version:
+  // // Add floating animation
+  // function animateBubbles() {
+  //   node.transition()
+  //     .duration(() => Math.random() * 2000 + 3000) // Random duration between 2000 and 5000ms
+  //     .ease(d3.easeLinear) // Linear easing for fluid motion
+  //     .attr('transform', d => {
+  //       const offsetX = Math.random() * 20 - 10; // Random x offset between -10 and 10
+  //       const offsetY = Math.random() * 20 - 10; // Random y offset between -10 and 10
+  //       return `translate(${d.x + offsetX},${d.y + offsetY})`;
+  //     })
+  //     .on('end', function() {
+  //       d3.select(this).call(animateBubbles); // Repeat the animation
+  //     });
+  // }
+
+  // animateBubbles();
+
+  // 2nd version:
+  function animateBubbles() {
+    node.each(function(d) {
+      // Initialize random parameters for each node
+      d.xOffset = Math.random() * 2 - 1; // Random horizontal offset speed
+      d.yOffset = Math.random() * 2 - 1; // Random vertical offset speed
+      d.angle = Math.random() * 2 * Math.PI; // Random initial angle for sinusoidal motion
+    });
+  
+    function update() {
+      node.transition()
+        .duration(3000)
+        .ease(d3.easeLinear) // Linear easing for fluid motion
+        .attr('transform', d => {
+          // Apply sinusoidal motion
+          d.angle += (Math.random() * 0.04 - 0.02); // Increment angle for next position
+          const offsetX = 10 * Math.sin(d.angle) + d.xOffset;
+          const offsetY = 10 * Math.cos(d.angle) + d.yOffset;
+          return `translate(${d.x + offsetX},${d.y + offsetY})`;
+        })
+        .on('end', function() {
+          d3.select(this).call(animateBubbles); // Repeat the animation
+        });
+    }
+  
+    update();
+  }
+  
+  animateBubbles();
 }
 
 // Call the function with data and a custom title
