@@ -1,129 +1,18 @@
 import * as d3 from 'd3';
-import { easeLinear } from 'd3-ease';
-import { getColor, getName } from './utils';
-
-export interface BubbleData {
-  name: string;
-  value: number;
-  color: string;
-}
-
-const data: BubbleData[] = [
-  { name: 'JavaScript', value: 100, color: 'yellow' },
-  { name: 'Python', value: 90, color: 'blue' },
-  { name: 'Java', value: 86, color: 'green' },
-  { name: 'C++', value: 75, color: 'red' },
-  { name: 'Ruby', value: 25, color: 'purple' },
-  { name: 'PHP', value: 10, color: 'orange' },
-  { name: 'VisualBasic', value: 45, color: 'fuchsia' },
-  { name: 'C#', value: 37, color: 'cyan' }
-];
+import { BubbleData, getColor, getName } from './utils';
+import { createSVGDefs } from './defs';
 
 // TODO: add settings for bubbles style (3d, flat, shadow, etc..)
 
-const createBubbleChart = (data: BubbleData[], title: string) => {
-  const svgDefs = d3.select('body')
-    .append('svg')
-    .attr('class', 'svg svg--defs');
-
-  const transpRadialGradient = svgDefs.append('radialGradient')
-    .attr('id', 'grad--bw')
-    .attr('fx', '25%')
-    .attr('fy', '25%');
-  transpRadialGradient.append('stop')
-    .attr('offset', '0%')
-    .attr('stop-color', 'black');
-  transpRadialGradient.append('stop')
-    .attr('offset', '30%')
-    .attr('stop-color', 'black')
-    .attr('stop-opacity', .2);
-  transpRadialGradient.append('stop')
-    .attr('offset', '97%')
-    .attr('stop-color', 'white')
-    .attr('stop-opacity', .4);
-  transpRadialGradient.append('stop')
-    .attr('offset', '100%')
-    .attr('stop-color', 'black');
-    
-  const transparentMask = svgDefs.append('mask')
-    .attr('id', 'mask')
-    .attr('maskContentUnits', 'objectBoundingBox');
-  transparentMask.append('rect')
-    .attr('fill', 'url(#grad--bw)')
-    .attr('width', 1)
-    .attr('height', 1);
-
-  const lightSpotRadialGradient = svgDefs.append('radialGradient')
-    .attr('id', 'grad--spot')
-    .attr('fx', '50%')
-    .attr('fy', '20%');
-  lightSpotRadialGradient.append('stop')
-    .attr('offset', '10%')
-    .attr('stop-color', 'white')
-    .attr('stop-opacity', .7);
-  lightSpotRadialGradient.append('stop')
-    .attr('offset', '70%')
-    .attr('stop-color', 'white')
-    .attr('stop-opacity', 0);
-
-  const topAndBottomLightRadialGradient = svgDefs.append('radialGradient')
-    .attr('id', 'grad--bw-light')
-    .attr('fx', '25%')
-    .attr('fy', '10%');
-  topAndBottomLightRadialGradient.append('stop')
-    .attr('offset', '60%')
-    .attr('stop-color', 'black')
-    .attr('stop-opacity', 0);
-  topAndBottomLightRadialGradient.append('stop')
-    .attr('offset', '90%')
-    .attr('stop-color', 'white')
-    .attr('stop-opacity', .25);
-  topAndBottomLightRadialGradient.append('stop')
-    .attr('offset', '100%')
-    .attr('stop-color', 'black');
-
-  const lightTopMask = svgDefs.append('mask')
-    .attr('id', 'mask--light-top')
-    .attr('maskContentUnits', 'objectBoundingBox');
-  lightTopMask.append('rect')
-    .attr('fill', 'url(#grad--bw-light)')
-    .attr('width', 1)
-    .attr('height', 1)
-    .attr('transform', 'rotate(180, .5, .5)');
-
-  const lightBottomMask = svgDefs.append('mask')
-    .attr('id', 'mask--light-bottom')
-    .attr('maskContentUnits', 'objectBoundingBox');
-  lightBottomMask.append('rect')
-    .attr('fill', 'url(#grad--bw-light)')
-    .attr('width', 1)
-    .attr('height', 1);
-
-  const colorLinearGradient = svgDefs.append('linearGradient')
-    .attr('id', 'grad')
-    .attr('x1', 0)
-    .attr('y1', '100%')
-    .attr('x2', '100%')
-    .attr('y2', 0);
-  colorLinearGradient.append('stop')
-    .attr('offset', '0')
-    .attr('stop-color', 'dodgerblue')
-    .attr('class', 'stop-1');
-  colorLinearGradient.append('stop')
-    .attr('offset', '50%')
-    .attr('stop-color', 'fuchsia')
-    .attr('class', 'stop-2');
-  colorLinearGradient.append('stop')
-    .attr('offset', '100%')
-    .attr('stop-color', 'yellow')
-    .attr('class', 'stop-3');
-
+export const createBubbleChart = (data: BubbleData[], title: string): string => {
   const width = 800;
   const height = 500;
-  const svg = d3.select('body')
+  const svg = d3.select('body') // TODO: customizable selector + h & w
     .append('svg')
     .attr('width', width)
     .attr('height', height);
+
+  createSVGDefs(svg);
 
   // SVG title // TODO: make customizable (color, size etc.)
   svg.append('text')
@@ -158,13 +47,15 @@ const createBubbleChart = (data: BubbleData[], title: string) => {
     .attr('fill', 'url(#grad--spot)')
     .attr('transform', 'rotate(-45)')
     .attr('class', 'shape');
+
   node.append('circle')
     .attr('r', d => d.r)
     .attr('cx', 0)
     .attr('cy', 0)
-    .attr('fill', getColor)
+    .attr('fill', d => getColor(d.data))
     .attr('mask', 'url(#mask--light-bottom)')
     .attr('class', 'shape');
+
   node.append('circle')
     .attr('r', d => d.r)
     .attr('cx', 0)
@@ -172,6 +63,7 @@ const createBubbleChart = (data: BubbleData[], title: string) => {
     .attr('fill', 'lightblue')
     .attr('mask', 'url(#mask--light-top)')
     .attr('class', 'shape');
+
   node.append('ellipse')
     .attr('rx', d => d.r * 0.4)
     .attr('ry', d => d.r * 0.2)
@@ -180,6 +72,7 @@ const createBubbleChart = (data: BubbleData[], title: string) => {
     .attr('fill', 'url(#grad--spot)')
     .attr('transform', 'rotate(-225)')
     .attr('class', 'shape');
+
   // node.append('circle')
   //   .attr('r', d => d.r)
   //   .attr('cx', 0)
@@ -191,7 +84,7 @@ const createBubbleChart = (data: BubbleData[], title: string) => {
   node.append('text')
     .attr('dy', '.3em')
     .attr('text-anchor', 'middle')
-    .text(getName)
+    .text(d => getName(d.data))
     .style('fill', 'white')
     .style('font-size', d => d.r / 3);
 
@@ -226,7 +119,7 @@ const createBubbleChart = (data: BubbleData[], title: string) => {
     function update() {
       node.transition()
         .duration(3000)
-        .ease(easeLinear)
+        .ease(d3.easeLinear)
         .attr('transform', (d: any) => {
           d.angle += (Math.random() * 0.1 - 0.2);
           const offsetX = 10 * Math.sin(d.angle) + d.xOffset;
@@ -245,6 +138,18 @@ const createBubbleChart = (data: BubbleData[], title: string) => {
 
   return svg.node()?.outerHTML || '';
 };
+
+// Example:
+const data: BubbleData[] = [
+  { name: 'JavaScript', value: 100, color: 'yellow' },
+  { name: 'Python', value: 90, color: 'blue' },
+  { name: 'Java', value: 86, color: 'green' },
+  { name: 'C++', value: 75, color: 'red' },
+  { name: 'Ruby', value: 25, color: 'purple' },
+  { name: 'PHP', value: 10, color: 'orange' },
+  { name: 'VisualBasic', value: 45, color: 'fuchsia' },
+  { name: 'C#', value: 37, color: 'cyan' }
+];
 
 // Generate the SVG content
 const svgContent = createBubbleChart(data, 'Custom Bubble Chart');
