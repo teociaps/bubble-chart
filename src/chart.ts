@@ -1,4 +1,14 @@
-const data = [
+import * as d3 from 'd3';
+import { easeLinear } from 'd3-ease';
+import { getColor, getName } from './utils';
+
+export interface BubbleData {
+  name: string;
+  value: number;
+  color: string;
+}
+
+const data: BubbleData[] = [
   { name: 'JavaScript', value: 100, color: 'yellow' },
   { name: 'Python', value: 90, color: 'blue' },
   { name: 'Java', value: 86, color: 'green' },
@@ -11,14 +21,12 @@ const data = [
 
 // TODO: add settings for bubbles style (3d, flat, shadow, etc..)
 
-const createBubbleChart = (data, title) => {
-  // Create svg definitions
+const createBubbleChart = (data: BubbleData[], title: string) => {
   const svgDefs = d3.select('body')
     .append('svg')
     .attr('class', 'svg svg--defs');
 
-  // Bubble transparency
-  var transpRadialGradient = svgDefs.append('radialGradient')
+  const transpRadialGradient = svgDefs.append('radialGradient')
     .attr('id', 'grad--bw')
     .attr('fx', '25%')
     .attr('fy', '25%');
@@ -37,7 +45,7 @@ const createBubbleChart = (data, title) => {
     .attr('offset', '100%')
     .attr('stop-color', 'black');
     
-  var transparentMask = svgDefs.append('mask')
+  const transparentMask = svgDefs.append('mask')
     .attr('id', 'mask')
     .attr('maskContentUnits', 'objectBoundingBox');
   transparentMask.append('rect')
@@ -45,8 +53,7 @@ const createBubbleChart = (data, title) => {
     .attr('width', 1)
     .attr('height', 1);
 
-  // Light spot
-  var lightSpotRadialGradient = svgDefs.append('radialGradient')
+  const lightSpotRadialGradient = svgDefs.append('radialGradient')
     .attr('id', 'grad--spot')
     .attr('fx', '50%')
     .attr('fy', '20%');
@@ -59,10 +66,9 @@ const createBubbleChart = (data, title) => {
     .attr('stop-color', 'white')
     .attr('stop-opacity', 0);
 
-  // Top & bottom light
-  var topAndBottomLightRadialGradient = svgDefs.append('radialGradient')
+  const topAndBottomLightRadialGradient = svgDefs.append('radialGradient')
     .attr('id', 'grad--bw-light')
-    .attr('_fx', '25%')
+    .attr('fx', '25%')
     .attr('fy', '10%');
   topAndBottomLightRadialGradient.append('stop')
     .attr('offset', '60%')
@@ -76,7 +82,7 @@ const createBubbleChart = (data, title) => {
     .attr('offset', '100%')
     .attr('stop-color', 'black');
 
-  var lightTopMask = svgDefs.append('mask')
+  const lightTopMask = svgDefs.append('mask')
     .attr('id', 'mask--light-top')
     .attr('maskContentUnits', 'objectBoundingBox');
   lightTopMask.append('rect')
@@ -85,7 +91,7 @@ const createBubbleChart = (data, title) => {
     .attr('height', 1)
     .attr('transform', 'rotate(180, .5, .5)');
 
-  var lightBottomMask = svgDefs.append('mask')
+  const lightBottomMask = svgDefs.append('mask')
     .attr('id', 'mask--light-bottom')
     .attr('maskContentUnits', 'objectBoundingBox');
   lightBottomMask.append('rect')
@@ -93,8 +99,7 @@ const createBubbleChart = (data, title) => {
     .attr('width', 1)
     .attr('height', 1);
 
-  // Colors of bubble
-  var colorLinearGradient = svgDefs.append('linearGradient')
+  const colorLinearGradient = svgDefs.append('linearGradient')
     .attr('id', 'grad')
     .attr('x1', 0)
     .attr('y1', '100%')
@@ -113,7 +118,6 @@ const createBubbleChart = (data, title) => {
     .attr('stop-color', 'yellow')
     .attr('class', 'stop-3');
 
-  // Create bubble chart
   const width = 800;
   const height = 500;
   const svg = d3.select('body')
@@ -121,20 +125,21 @@ const createBubbleChart = (data, title) => {
     .attr('width', width)
     .attr('height', height);
 
-  // Add title to SVG // TODO: make customizable (color etc.)
+  // SVG title // TODO: make customizable (color, size etc.)
   svg.append('text')
     .attr('x', width / 2)
     .attr('y', 20)
     .attr('text-anchor', 'middle')
     .style('font-size', '24px')
     .style('font-weight', 'bold')
+    .style('fill', 'black')
     .text(title);
 
-  const bubble = d3.pack()
+  const bubble = d3.pack<BubbleData>()
     .size([width, height])
     .padding(1.5);
 
-  const root = d3.hierarchy({ children: data })
+  const root = d3.hierarchy({ children: data } as any)
     .sum(d => d.value);
 
   const nodes = bubble(root).leaves();
@@ -157,14 +162,14 @@ const createBubbleChart = (data, title) => {
     .attr('r', d => d.r)
     .attr('cx', 0)
     .attr('cy', 0)
-    .attr('fill', d => d.data.color)
+    .attr('fill', getColor)
     .attr('mask', 'url(#mask--light-bottom)')
     .attr('class', 'shape');
   node.append('circle')
     .attr('r', d => d.r)
     .attr('cx', 0)
     .attr('cy', 0)
-    .attr('fill', 'lightblue') //yellow
+    .attr('fill', 'lightblue')
     .attr('mask', 'url(#mask--light-top)')
     .attr('class', 'shape');
   node.append('ellipse')
@@ -186,7 +191,7 @@ const createBubbleChart = (data, title) => {
   node.append('text')
     .attr('dy', '.3em')
     .attr('text-anchor', 'middle')
-    .text(d => d.data.name)
+    .text(getName)
     .style('fill', 'white')
     .style('font-size', d => d.r / 3);
 
@@ -212,20 +217,18 @@ const createBubbleChart = (data, title) => {
 
   // 2nd version:
   function animateBubbles() {
-    node.each(function(d) {
-      // Initialize random parameters for each node
-      d.xOffset = Math.random() * 2 - 1; // Random horizontal offset speed
-      d.yOffset = Math.random() * 2 - 1; // Random vertical offset speed
-      d.angle = Math.random() * 2 * Math.PI; // Random initial angle for sinusoidal motion
+    node.each(function (d: any) {
+      d.xOffset = Math.random() * 2 - 1;
+      d.yOffset = Math.random() * 2 - 1;
+      d.angle = Math.random() * 2 * Math.PI;
     });
-  
+
     function update() {
       node.transition()
         .duration(3000)
-        .ease(d3.easeLinear) // Linear easing for fluid motion
-        .attr('transform', d => {
-          // Apply sinusoidal motion
-          d.angle += (Math.random() * 0.04 - 0.02); // Increment angle for next position
+        .ease(easeLinear)
+        .attr('transform', (d: any) => {
+          d.angle += (Math.random() * 0.1 - 0.2);
           const offsetX = 10 * Math.sin(d.angle) + d.xOffset;
           const offsetY = 10 * Math.cos(d.angle) + d.yOffset;
           return `translate(${d.x + offsetX},${d.y + offsetY})`;
@@ -234,12 +237,16 @@ const createBubbleChart = (data, title) => {
           d3.select(this).call(animateBubbles); // Repeat the animation
         });
     }
-  
+
     update();
   }
-  
-  animateBubbles();
-}
 
-// Call the function with data and a custom title
-createBubbleChart(data, 'Test Custom Bubble Chart Title');
+  animateBubbles();
+
+  return svg.node()?.outerHTML || '';
+};
+
+// Generate the SVG content
+const svgContent = createBubbleChart(data, 'Custom Bubble Chart');
+
+console.log(svgContent);
