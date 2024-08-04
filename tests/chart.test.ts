@@ -1,6 +1,8 @@
 import { createBubbleChart } from '../src/chart';
 import { BubbleData } from '../src/utils';
 
+jest.useFakeTimers();
+
 describe('Bubble Chart', () => {
   const data: BubbleData[] = [
     { name: 'JavaScript', value: 100, color: 'yellow' },
@@ -24,6 +26,22 @@ describe('Bubble Chart', () => {
     bubbles.forEach((bubble, i) => {
       const name = bubble.querySelector('text')?.textContent;
       expect(name).toBe(data[i].name);
+    });
+  });
+
+  test('should animate bubbles', () => {
+    const svgContent = createBubbleChart(data, 'Test Bubble Chart');
+    document.body.innerHTML = svgContent;
+
+    const bubbles = document.querySelectorAll('.bubble');
+    expect(bubbles.length).toBe(data.length);
+
+    // Fast-forward time to trigger the animation
+    jest.advanceTimersByTime(3000);
+
+    bubbles.forEach((bubble) => {
+      const transform = bubble.getAttribute('transform');
+      expect(transform).toMatch(/translate\(\d+(\.\d+)?,\d+(\.\d+)?\)/);
     });
   });
 });
