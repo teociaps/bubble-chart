@@ -1,10 +1,10 @@
 import * as d3 from 'd3';
-import { BubbleData, getColor, getName } from './utils';
+import { BubbleData, getColor, getName, TitleOptions, toKebabCase } from './utils';
 import { createSVGDefs } from './defs';
 
 // TODO: add settings for bubbles style (3d, flat, shadow, etc..)
 
-export const createBubbleChart = (data: BubbleData[], title: string): string => {
+export const createBubbleChart = (data: BubbleData[], titleOptions: TitleOptions): string => {
   const width = 800;
   const height = 500;
   const svg = d3.select('body') // TODO: customizable selector + h & w
@@ -14,15 +14,31 @@ export const createBubbleChart = (data: BubbleData[], title: string): string => 
 
   createSVGDefs(svg);
 
-  // SVG title // TODO: make customizable (color, size etc.)
-  svg.append('text')
-    .attr('x', width / 2)
-    .attr('y', 20)
-    .attr('text-anchor', 'middle')
-    .style('font-size', '24px')
-    .style('font-weight', 'bold')
-    .style('fill', 'black')
-    .text(title);
+  const defaultTitleOptions: TitleOptions = {
+    text: 'Bubble Chart',
+    fontSize: '24px',
+    fontWeight: 'bold',
+    fill: 'black',
+    padding: { top: 100, right: 0, bottom: 0, left: 0 },
+    textAnchor: 'middle'
+  };
+  
+  const mergedTitleOptions = { ...defaultTitleOptions, ...titleOptions };
+
+  const padding = mergedTitleOptions.padding || {};
+
+  // SVG title with customizable styles
+  const titleElement = svg.append('text')
+    .attr('x', (width / 2) + (padding.left || 0) - (padding.right || 0))
+    .attr('y', 20 + (padding.top || 0) - (padding.bottom || 0))
+    .text(mergedTitleOptions.text as string);
+
+  // Apply the merged styles to the title element
+  Object.keys(mergedTitleOptions).forEach(style => {
+    if (style !== 'padding') {
+      titleElement.style(toKebabCase(style), mergedTitleOptions[style]);
+    }
+  });
 
   const bubble = d3.pack<BubbleData>()
     .size([width, height])
@@ -151,7 +167,15 @@ const data: BubbleData[] = [
   { name: 'C#', value: 37, color: 'cyan' }
 ];
 
+const customTitleOptions: TitleOptions = {
+  text: 'Custom Bubble Chart',
+  fontSize: '24px',
+  fontWeight: 'normal',
+  fill: 'blue',
+  fontFamily: 'Times New Roman'
+};
+
 // Generate the SVG content
-const svgContent = createBubbleChart(data, 'Custom Bubble Chart');
+const svgContent = createBubbleChart(data, customTitleOptions);
 
 console.log(svgContent);

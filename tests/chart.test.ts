@@ -1,5 +1,5 @@
 import { createBubbleChart } from '../src/chart';
-import { BubbleData } from '../src/utils';
+import { BubbleData, TitleOptions } from '../src/utils';
 
 jest.useFakeTimers();
 
@@ -10,8 +10,12 @@ describe('Bubble Chart', () => {
     { name: 'Java', value: 86, color: 'green' }
   ];
 
+  const customTitleOptions: TitleOptions = {
+    text: 'Test Bubble Chart'
+  };
+
   test('should create a bubble chart with title', () => {
-    const svgContent = createBubbleChart(data, 'Test Bubble Chart');
+    const svgContent = createBubbleChart(data, customTitleOptions);
     document.body.innerHTML = svgContent;
 
     expect(document.querySelector('text')?.textContent).toBe('Test Bubble Chart');
@@ -19,7 +23,7 @@ describe('Bubble Chart', () => {
   });
 
   test('should create bubbles with correct properties', () => {
-    const svgContent = createBubbleChart(data, 'Test Bubble Chart');
+    const svgContent = createBubbleChart(data, customTitleOptions);
     document.body.innerHTML = svgContent;
 
     const bubbles = document.querySelectorAll('.bubble');
@@ -30,7 +34,7 @@ describe('Bubble Chart', () => {
   });
 
   test('should animate bubbles', () => {
-    const svgContent = createBubbleChart(data, 'Test Bubble Chart');
+    const svgContent = createBubbleChart(data, customTitleOptions);
     document.body.innerHTML = svgContent;
 
     const bubbles = document.querySelectorAll('.bubble');
