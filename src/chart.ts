@@ -5,21 +5,12 @@ import { createSVGDefs } from './defs';
 // TODO: add settings for bubbles style (3d, flat, shadow, etc..)
 
 export const createBubbleChart = (data: BubbleData[], titleOptions: TitleOptions): string => {
-  const width = 800;
-  const height = 500;
-  const svg = d3.select('body') // TODO: customizable selector + h & w
-    .append('svg')
-    .attr('width', width)
-    .attr('height', height);
-
-  createSVGDefs(svg);
-
   const defaultTitleOptions: TitleOptions = {
     text: 'Bubble Chart',
     fontSize: '24px',
     fontWeight: 'bold',
     fill: 'black',
-    padding: { top: 100, right: 0, bottom: 0, left: 0 },
+    padding: { top: 0, right: 0, bottom: 0, left: 0 },
     textAnchor: 'middle'
   };
   
@@ -27,10 +18,23 @@ export const createBubbleChart = (data: BubbleData[], titleOptions: TitleOptions
 
   const padding = mergedTitleOptions.padding || {};
 
+  const width = 800;
+  const baseHeight = 600;
+  const titleHeight = 40; // Height reserved for the title text
+  const maxAnimationOffset = 20; // Maximum offset introduced by the animation
+
+  const svg = d3.select('body') // TODO: customizable selector + h & w
+    .append('svg')
+    .attr('width', '100%')
+    .attr('viewBox', `0 0 ${width} ${baseHeight + titleHeight}`)
+    .attr('preserveAspectRatio', 'xMidYMid meet');
+
+  createSVGDefs(svg);
+
   // SVG title with customizable styles
   const titleElement = svg.append('text')
     .attr('x', (width / 2) + (padding.left || 0) - (padding.right || 0))
-    .attr('y', 20 + (padding.top || 0) - (padding.bottom || 0))
+    .attr('y', titleHeight + (padding.top || 0) - (padding.bottom || 0))
     .text(mergedTitleOptions.text as string);
 
   // Apply the merged styles to the title element
@@ -40,22 +44,33 @@ export const createBubbleChart = (data: BubbleData[], titleOptions: TitleOptions
     }
   });
 
-  const bubble = d3.pack<BubbleData>()
-    .size([width, height])
+  const bubbleContainer = d3.pack<BubbleData>()
+    .size([width, baseHeight])
     .padding(1.5);
 
   const root = d3.hierarchy({ children: data } as any)
     .sum(d => d.value);
 
-  const nodes = bubble(root).leaves();
+  const bubbles = bubbleContainer(root).leaves();
 
-  const node = svg.selectAll('.node')
-    .data(nodes)
+  // Find the maximum y-coordinate of the bubbles considering their radii
+  const maxY = d3.max(bubbles, d => d.y + d.r + maxAnimationOffset) || baseHeight;
+  const adjustedHeight = maxY + titleHeight + (padding.top || 0) + (padding.bottom || 0);
+
+  // Update the SVG height and viewBox
+  svg.attr('height', adjustedHeight)
+    .attr('viewBox', `0 0 ${width} ${adjustedHeight}`);
+
+  const bubbleGroup = svg.append('g')
+    .attr('transform', `translate(0, ${titleHeight + (padding.top || 0)})`);
+
+  const bubble = bubbleGroup.selectAll()
+    .data(bubbles)
     .enter().append('g')
     .attr('class', 'bubble')
     .attr('transform', d => `translate(${d.x},${d.y})`);
 
-  node.append('ellipse')
+  bubble.append('ellipse')
     .attr('rx', d => d.r * 0.6)
     .attr('ry', d => d.r * 0.3)
     .attr('cx', 0)
@@ -64,7 +79,7 @@ export const createBubbleChart = (data: BubbleData[], titleOptions: TitleOptions
     .attr('transform', 'rotate(-45)')
     .attr('class', 'shape');
 
-  node.append('circle')
+  bubble.append('circle')
     .attr('r', d => d.r)
     .attr('cx', 0)
     .attr('cy', 0)
@@ -72,7 +87,7 @@ export const createBubbleChart = (data: BubbleData[], titleOptions: TitleOptions
     .attr('mask', 'url(#mask--light-bottom)')
     .attr('class', 'shape');
 
-  node.append('circle')
+  bubble.append('circle')
     .attr('r', d => d.r)
     .attr('cx', 0)
     .attr('cy', 0)
@@ -80,7 +95,7 @@ export const createBubbleChart = (data: BubbleData[], titleOptions: TitleOptions
     .attr('mask', 'url(#mask--light-top)')
     .attr('class', 'shape');
 
-  node.append('ellipse')
+  bubble.append('ellipse')
     .attr('rx', d => d.r * 0.4)
     .attr('ry', d => d.r * 0.2)
     .attr('cx', 0)
@@ -97,7 +112,7 @@ export const createBubbleChart = (data: BubbleData[], titleOptions: TitleOptions
   //   .attr('mask', 'url(#mask)')
   //   .attr('class', 'shape');
 
-  node.append('text')
+  bubble.append('text')
     .attr('dy', '.3em')
     .attr('text-anchor', 'middle')
     .text(d => getName(d.data))
@@ -126,14 +141,14 @@ export const createBubbleChart = (data: BubbleData[], titleOptions: TitleOptions
 
   // 2nd version:
   function animateBubbles() {
-    node.each(function (d: any) {
+    bubble.each(function (d: any) {
       d.xOffset = Math.random() * 2 - 1;
       d.yOffset = Math.random() * 2 - 1;
       d.angle = Math.random() * 2 * Math.PI;
     });
 
     function update() {
-      node.transition()
+      bubble.transition()
         .duration(3000)
         .ease(d3.easeLinear)
         .attr('transform', (d: any) => {
@@ -170,9 +185,9 @@ const data: BubbleData[] = [
 const customTitleOptions: TitleOptions = {
   text: 'Custom Bubble Chart',
   fontSize: '24px',
-  fontWeight: 'normal',
-  fill: 'blue',
-  fontFamily: 'Times New Roman'
+  fontWeight: 'bold',
+  fill: 'white',
+  fontFamily: 'Arial'
 };
 
 // Generate the SVG content
