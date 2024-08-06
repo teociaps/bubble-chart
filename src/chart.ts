@@ -44,80 +44,101 @@ export const createBubbleChart = (data: BubbleData[], titleOptions: TitleOptions
     }
   });
 
-  const bubbleContainer = d3.pack<BubbleData>()
+  const bubblesPack = d3.pack<BubbleData>()
     .size([width, baseHeight])
     .padding(1.5);
 
   const root = d3.hierarchy({ children: data } as any)
     .sum(d => d.value);
 
-  const bubbles = bubbleContainer(root).leaves();
+  const bubbleNodes = bubblesPack(root).leaves();
 
   // Find the maximum y-coordinate of the bubbles considering their radii
-  const maxY = d3.max(bubbles, d => d.y + d.r + maxAnimationOffset) || baseHeight;
+  const maxY = d3.max(bubbleNodes, d => d.y + d.r + maxAnimationOffset) || baseHeight;
   const adjustedHeight = maxY + titleHeight + (padding.top || 0) + (padding.bottom || 0);
-
+  
   // Update the SVG height and viewBox
   svg.attr('height', adjustedHeight)
     .attr('viewBox', `0 0 ${width} ${adjustedHeight}`);
-
+  
   const bubbleGroup = svg.append('g')
     .attr('transform', `translate(0, ${titleHeight + (padding.top || 0)})`);
-
-  const bubble = bubbleGroup.selectAll()
-    .data(bubbles)
+  
+  const bubbles = bubbleGroup.selectAll()
+    .data(bubbleNodes)
     .enter().append('g')
     .attr('class', 'bubble')
     .attr('transform', d => `translate(${d.x},${d.y})`);
 
-  bubble.append('ellipse')
-    .attr('rx', d => d.r * 0.6)
-    .attr('ry', d => d.r * 0.3)
-    .attr('cx', 0)
-    .attr('cy', d => d.r * -0.6)
-    .attr('fill', 'url(#grad--spot)')
-    .attr('transform', 'rotate(-45)')
-    .attr('class', 'shape');
+  // Build each bubble
+  bubbles.each(function(d) {
+    const bubble = d3.select(this);
 
-  bubble.append('circle')
-    .attr('r', d => d.r)
-    .attr('cx', 0)
-    .attr('cy', 0)
-    .attr('fill', d => getColor(d.data))
-    .attr('mask', 'url(#mask--light-bottom)')
-    .attr('class', 'shape');
+    bubble.append('ellipse')
+      .attr('rx', d.r * 0.6)
+      .attr('ry', d.r * 0.3)
+      .attr('cx', 0)
+      .attr('cy', d.r * -0.6)
+      .attr('fill', 'url(#grad--spot)')
+      .attr('transform', 'rotate(-45)')
+      .attr('class', 'shape');
+    
+      bubble.append('ellipse')
+      .attr('rx', d.r * 0.4)
+      .attr('ry', d.r * 0.2)
+      .attr('cx', 0)
+      .attr('cy', d.r * -0.7)
+      .attr('fill', 'url(#grad--spot)')
+      .attr('transform', 'rotate(-225)')
+      .attr('class', 'shape');
 
-  bubble.append('circle')
-    .attr('r', d => d.r)
-    .attr('cx', 0)
-    .attr('cy', 0)
-    .attr('fill', 'lightblue')
-    .attr('mask', 'url(#mask--light-top)')
-    .attr('class', 'shape');
+    const iconUrl = d.data.icon as string;
+    let color = d.data.color;
 
-  bubble.append('ellipse')
-    .attr('rx', d => d.r * 0.4)
-    .attr('ry', d => d.r * 0.2)
-    .attr('cx', 0)
-    .attr('cy', d => d.r * -0.7)
-    .attr('fill', 'url(#grad--spot)')
-    .attr('transform', 'rotate(-225)')
-    .attr('class', 'shape');
+    bubble.append('circle')
+      .attr('r', d.r)
+      .attr('cx', 0)
+      .attr('cy', 0)
+      .attr('fill', color)
+      .attr('mask', 'url(#mask--light-bottom)')
+      .attr('class', 'shape');
 
-  // node.append('circle')
-  //   .attr('r', d => d.r)
-  //   .attr('cx', 0)
-  //   .attr('cy', 0)
-  //   .attr('fill', 'url(#grad)')
-  //   .attr('mask', 'url(#mask)')
-  //   .attr('class', 'shape');
+    bubble.append('circle')
+      .attr('r', d.r)
+      .attr('cx', 0)
+      .attr('cy', 0)
+      .attr('fill', 'lightblue')
+      .attr('mask', 'url(#mask--light-top)')
+      .attr('class', 'shape');
 
-  bubble.append('text')
-    .attr('dy', '.3em')
-    .attr('text-anchor', 'middle')
-    .text(d => getName(d.data))
-    .style('fill', 'white')
-    .style('font-size', d => d.r / 3);
+    // node.append('circle')
+    //   .attr('r', d => d.r)
+    //   .attr('cx', 0)
+    //   .attr('cy', 0)
+    //   .attr('fill', 'url(#grad)')
+    //   .attr('mask', 'url(#mask)')
+    //   .attr('class', 'shape');
+
+    if (iconUrl) {
+      bubble.append('image')
+        .attr('xlink:href', iconUrl)
+        .attr('width', d.r)
+        .attr('height', d.r)
+        .attr('x', -d.r / 2)
+        .attr('y', -d.r / 2);
+    } else {
+      bubble.append('text')
+        .attr('dy', '.3em')
+        .attr('text-anchor', 'middle')
+        .text(getName(d.data))
+        .style('fill', 'white')
+        .style('font-size', d.r / 3);
+    }
+  });
+  
+  // TODO: set auto color based on icon if present 
+    
+  // TODO: also add % into the chart (option?)
 
   // TODO: choose animation or make it customizable(?)
 
@@ -141,14 +162,14 @@ export const createBubbleChart = (data: BubbleData[], titleOptions: TitleOptions
 
   // 2nd version:
   function animateBubbles() {
-    bubble.each(function (d: any) {
+    bubbles.each(function (d: any) {
       d.xOffset = Math.random() * 2 - 1;
       d.yOffset = Math.random() * 2 - 1;
       d.angle = Math.random() * 2 * Math.PI;
     });
 
     function update() {
-      bubble.transition()
+      bubbles.transition()
         .duration(3000)
         .ease(d3.easeLinear)
         .attr('transform', (d: any) => {
@@ -172,14 +193,14 @@ export const createBubbleChart = (data: BubbleData[], titleOptions: TitleOptions
 
 // Example:
 const data: BubbleData[] = [
-  { name: 'JavaScript', value: 100, color: 'yellow' },
-  { name: 'Python', value: 90, color: 'blue' },
-  { name: 'Java', value: 86, color: 'green' },
-  { name: 'C++', value: 75, color: 'red' },
-  { name: 'Ruby', value: 25, color: 'purple' },
-  { name: 'PHP', value: 10, color: 'orange' },
+  { name: 'JavaScript', value: 100, color: 'yellow', icon: 'https://icon.icepanel.io/Technology/svg/JavaScript.svg' },
+  { name: 'Python', value: 90, color: 'blue', icon: 'https://icon.icepanel.io/Technology/svg/Python.svg'},
+  { name: 'Java', value: 86, color: 'green', icon: 'https://icon.icepanel.io/Technology/svg/Java.svg' },
+  { name: 'C++', value: 75, color: 'red', icon: 'https://icon.icepanel.io/Technology/svg/C%2B%2B-%28CPlusPlus%29.svg' },
+  { name: 'Ruby', value: 25, color: 'purple', icon: 'https://icon.icepanel.io/Technology/svg/Ruby.svg' },
+  { name: 'PHP', value: 10, color: 'orange', icon: 'https://icon.icepanel.io/Technology/svg/PHP.svg' },
   { name: 'VisualBasic', value: 45, color: 'fuchsia' },
-  { name: 'C#', value: 37, color: 'cyan' }
+  { name: 'C#', value: 37, color: 'cyan', icon: 'https://icon.icepanel.io/Technology/svg/C%23-%28CSharp%29.svg' }
 ];
 
 const customTitleOptions: TitleOptions = {

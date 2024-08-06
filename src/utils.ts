@@ -2,6 +2,7 @@ export interface BubbleData {
   name: string;
   value: number;
   color: string;
+  icon?: string;
 }
 
 export const getColor = (d: BubbleData) => d.color;

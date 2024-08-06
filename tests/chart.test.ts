@@ -5,8 +5,8 @@ jest.useFakeTimers();
 
 describe('Bubble Chart', () => {
   const data: BubbleData[] = [
-    { name: 'JavaScript', value: 100, color: 'yellow' },
-    { name: 'Python', value: 90, color: 'blue' },
+    { name: 'JavaScript', value: 100, color: 'yellow', icon: '' },
+    { name: 'Python', value: 90, color: 'blue', icon: 'path/python.svg' },
     { name: 'Java', value: 86, color: 'green' }
   ];
 
@@ -28,8 +28,10 @@ describe('Bubble Chart', () => {
 
     const bubbles = document.querySelectorAll('.bubble');
     bubbles.forEach((bubble, i) => {
-      const name = bubble.querySelector('text')?.textContent;
-      expect(name).toBe(data[i].name);
+      if (!data[i].icon) {
+        const name = bubble.querySelector('text')?.textContent;
+        expect(name).toBe(data[i].name);
+      }
     });
   });
 
