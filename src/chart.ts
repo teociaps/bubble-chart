@@ -4,8 +4,13 @@ import { createSVGDefs } from './defs';
 
 // TODO: add settings for bubbles style (3d, flat, shadow, etc..)
 
-export const createBubbleChart = (data: BubbleData[], titleOptions: TitleOptions): string => {
-  const defaultTitleOptions: TitleOptions = {
+export const createBubbleChart = (
+  data: BubbleData[], 
+  titleOptions: TitleOptions, 
+  selector: string = 'body', 
+  width: number = 800, 
+  height: number = 600
+): string => {  const defaultTitleOptions: TitleOptions = {
     text: 'Bubble Chart',
     fontSize: '24px',
     fontWeight: 'bold',
@@ -18,12 +23,11 @@ export const createBubbleChart = (data: BubbleData[], titleOptions: TitleOptions
 
   const padding = mergedTitleOptions.padding || {};
 
-  const width = 800;
-  const baseHeight = 600;
+  const baseHeight = height;
   const titleHeight = 40; // Height reserved for the title text
   const maxAnimationOffset = 20; // Maximum offset introduced by the animation
 
-  const svg = d3.select('body') // TODO: customizable selector + h & w
+  const svg = d3.select(selector)
     .append('svg')
     .attr('width', '100%')
     .attr('viewBox', `0 0 ${width} ${baseHeight + titleHeight}`)
@@ -212,6 +216,6 @@ const customTitleOptions: TitleOptions = {
 };
 
 // Generate the SVG content
-const svgContent = createBubbleChart(data, customTitleOptions);
+const svgContent = createBubbleChart(data, customTitleOptions, 'body', 1000, 700);
 
 console.log(svgContent);
