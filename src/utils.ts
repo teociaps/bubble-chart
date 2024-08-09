@@ -8,6 +8,11 @@ export interface BubbleData {
 export const getColor = (d: BubbleData) => d.color;
 export const getName = (d: BubbleData) => d.name;
 
+export interface BubbleChartOptions {
+  titleOptions: TitleOptions;
+  showPercentages?: boolean;
+}
+
 export interface TitleOptions {
   text?: string,
   fontSize?: string;

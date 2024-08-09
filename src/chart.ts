@@ -1,12 +1,12 @@
 import * as d3 from 'd3';
-import { BubbleData, getColor, getName, TitleOptions, toKebabCase } from './utils';
+import { BubbleChartOptions, BubbleData, getColor, getName, TitleOptions, toKebabCase } from './utils';
 import { createSVGDefs } from './defs';
 
 // TODO: add settings for bubbles style (3d, flat, shadow, etc..)
 
 export const createBubbleChart = (
   data: BubbleData[], 
-  titleOptions: TitleOptions, 
+  chartOptions: BubbleChartOptions, 
   selector: string = 'body', 
   width: number = 800, 
   height: number = 600
@@ -15,16 +15,20 @@ export const createBubbleChart = (
   if (data.length == 0)
     return null;
 
-const defaultTitleOptions: TitleOptions = {
+  const defaultTitleOptions: TitleOptions = {
     text: 'Bubble Chart',
     fontSize: '24px',
     fontWeight: 'bold',
     fill: 'black',
     padding: { top: 0, right: 0, bottom: 0, left: 0 },
     textAnchor: 'middle'
+  }
+  const defaultChartOptions: BubbleChartOptions = {
+    titleOptions: defaultTitleOptions
   };
   
-  const mergedTitleOptions = { ...defaultTitleOptions, ...titleOptions };
+  const mergedChartOptions = { ...defaultChartOptions, ...chartOptions };
+  const mergedTitleOptions = { ...defaultTitleOptions, ...chartOptions.titleOptions };
 
   const padding = mergedTitleOptions.padding || {};
 
@@ -42,6 +46,7 @@ const defaultTitleOptions: TitleOptions = {
 
   // SVG title with customizable styles
   const titleElement = svg.append('text')
+    .attr('class', 'bc-title')
     .attr('x', (width / 2) + (padding.left || 0) - (padding.right || 0))
     .attr('y', titleHeight + (padding.top || 0) - (padding.bottom || 0))
     .text(mergedTitleOptions.text as string);
@@ -61,6 +66,8 @@ const defaultTitleOptions: TitleOptions = {
     .sum(d => d.value);
 
   const bubbleNodes = bubblesPack(root).leaves();
+
+  const totalValue = d3.sum(data, d => d.value); // Calculate total value
 
   // Find the maximum y-coordinate of the bubbles considering their radii
   const maxY = d3.max(bubbleNodes, d => d.y + d.r + maxAnimationOffset) || baseHeight;
@@ -102,7 +109,8 @@ const defaultTitleOptions: TitleOptions = {
       .attr('class', 'shape');
 
     const iconUrl = d.data.icon as string;
-    let color = d.data.color;
+    let color = getColor(d.data);
+    // TODO: set auto color based on icon if present
 
     bubble.append('circle')
       .attr('r', d.r)
@@ -143,12 +151,19 @@ const defaultTitleOptions: TitleOptions = {
         .style('fill', 'white')
         .style('font-size', d.r / 3);
     }
+
+    const percentage = ((d.data.value / totalValue) * 100).toFixed(2) + '%';
+    if (mergedChartOptions.showPercentages) {
+      bubble.append('text')
+        .attr('class', 'b-percentage')
+        .attr('dy', '3.5em')
+        .attr('text-anchor', 'middle')
+        .text(percentage)
+        .style('fill', 'white')
+        .style('font-size', d.r / 4);
+    }
   });
   
-  // TODO: set auto color based on icon if present 
-    
-  // TODO: also add % into the chart (option?)
-
   // TODO: choose animation or make it customizable(?)
 
   // 1st version:
@@ -212,15 +227,18 @@ const data: BubbleData[] = [
   { name: 'C#', value: 37, color: 'cyan', icon: 'https://icon.icepanel.io/Technology/svg/C%23-%28CSharp%29.svg' }
 ];
 
-const customTitleOptions: TitleOptions = {
-  text: 'Custom Bubble Chart',
-  fontSize: '24px',
-  fontWeight: 'bold',
-  fill: 'white',
-  fontFamily: 'Arial'
+const customBubbleChartOptions: BubbleChartOptions = {
+  titleOptions: {
+    text: 'Custom Bubble Chart',
+    fontSize: '24px',
+    fontWeight: 'bold',
+    fill: 'white',
+    fontFamily: 'Arial'
+  },
+  showPercentages: true
 };
 
 // Generate the SVG content
-const svgContent = createBubbleChart(data, customTitleOptions, 'body', 1000, 700);
+const svgContent = createBubbleChart(data, customBubbleChartOptions, 'body', 1000, 700);
 
 console.log(svgContent);

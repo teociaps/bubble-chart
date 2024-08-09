@@ -1,5 +1,5 @@
 import { createBubbleChart } from '../src/chart';
-import { BubbleData, TitleOptions } from '../src/utils';
+import { BubbleData, BubbleChartOptions } from '../src/utils';
 
 jest.useFakeTimers();
 
@@ -10,20 +10,30 @@ describe('Bubble Chart', () => {
     { name: 'Java', value: 86, color: 'green' }
   ];
 
-  const customTitleOptions: TitleOptions = {
-    text: 'Test Bubble Chart'
+  const customBubbleChartOptions: BubbleChartOptions = {
+    titleOptions: {
+      text: 'Test Bubble Chart' 
+    },
+    showPercentages: true
   };
 
   test('should create a bubble chart with title', () => {
-    const svgContent = createBubbleChart(data, customTitleOptions);
+    const svgContent = createBubbleChart(data, customBubbleChartOptions);
     document.body.innerHTML = svgContent!;
 
-    expect(document.querySelector('text')?.textContent).toBe('Test Bubble Chart');
+    expect(document.querySelector('.bc-title')?.textContent).toBe('Test Bubble Chart');
     expect(document.querySelectorAll('.bubble').length).toBe(data.length);
   });
 
+  test('should show percentage for each bubble', () => {
+    const svgContent = createBubbleChart(data, customBubbleChartOptions);
+    document.body.innerHTML = svgContent!;
+
+    expect(document.querySelectorAll('.b-percentage').length).toBe(data.length);
+  });
+
   test('should create bubbles with correct properties', () => {
-    const svgContent = createBubbleChart(data, customTitleOptions);
+    const svgContent = createBubbleChart(data, customBubbleChartOptions);
     document.body.innerHTML = svgContent!;
 
     const bubbles = document.querySelectorAll('.bubble');
@@ -36,7 +46,7 @@ describe('Bubble Chart', () => {
   });
 
   test('should animate bubbles', () => {
-    const svgContent = createBubbleChart(data, customTitleOptions);
+    const svgContent = createBubbleChart(data, customBubbleChartOptions);
     document.body.innerHTML = svgContent!;
 
     const bubbles = document.querySelectorAll('.bubble');
