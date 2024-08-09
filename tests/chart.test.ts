@@ -16,7 +16,7 @@ describe('Bubble Chart', () => {
 
   test('should create a bubble chart with title', () => {
     const svgContent = createBubbleChart(data, customTitleOptions);
-    document.body.innerHTML = svgContent;
+    document.body.innerHTML = svgContent!;
 
     expect(document.querySelector('text')?.textContent).toBe('Test Bubble Chart');
     expect(document.querySelectorAll('.bubble').length).toBe(data.length);
@@ -24,7 +24,7 @@ describe('Bubble Chart', () => {
 
   test('should create bubbles with correct properties', () => {
     const svgContent = createBubbleChart(data, customTitleOptions);
-    document.body.innerHTML = svgContent;
+    document.body.innerHTML = svgContent!;
 
     const bubbles = document.querySelectorAll('.bubble');
     bubbles.forEach((bubble, i) => {
@@ -37,7 +37,7 @@ describe('Bubble Chart', () => {
 
   test('should animate bubbles', () => {
     const svgContent = createBubbleChart(data, customTitleOptions);
-    document.body.innerHTML = svgContent;
+    document.body.innerHTML = svgContent!;
 
     const bubbles = document.querySelectorAll('.bubble');
     expect(bubbles.length).toBe(data.length);
@@ -49,5 +49,11 @@ describe('Bubble Chart', () => {
       const transform = bubble.getAttribute('transform');
       expect(transform).toMatch(/translate\(\d+(\.\d+)?,\d+(\.\d+)?\)/);
     });
+  });
+
+  test('should not create bubbles if no data provided', () => {
+    const svgContent = createBubbleChart([], customBubbleChartOptions);
+
+    expect(svgContent).toBe(null);
   });
 });

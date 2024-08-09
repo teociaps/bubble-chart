@@ -10,7 +10,12 @@ export const createBubbleChart = (
   selector: string = 'body', 
   width: number = 800, 
   height: number = 600
-): string => {  const defaultTitleOptions: TitleOptions = {
+): string | null => { 
+  
+  if (data.length == 0)
+    return null;
+
+const defaultTitleOptions: TitleOptions = {
     text: 'Bubble Chart',
     fontSize: '24px',
     fontWeight: 'bold',
