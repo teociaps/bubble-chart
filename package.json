@@ -1,8 +1,9 @@
 {
-  "name": "bubble-chart",
-  "version": "1.0.0",
-  "description": "Create custom bubble charts",
-  "main": "src/index.ts",
+  "name": "@teociaps/bubble-chart",
+  "version": "0.0.1",
+  "description": "Create custom animated bubble charts",
+  "main": "dist/bundle.js",
+  "types": "dist/index.d.ts",
   "type": "module",
   "scripts": {
     "build": "rollup -c",
@@ -10,14 +11,18 @@
     "test": "jest --coverage"
   },
   "keywords": [
-    "bubble",
+    "bubble-chart",
     "chart",
-    "animation",
-    "3d"
+    "d3",
+    "d3-chart",
+    "animated"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/teociaps/bubble-chart.git"
+  },
   "author": "Matteo Ciapparelli",
   "license": "MIT",
-  "repository": "https://github.com/teociaps/bubble-chart.git",
   "dependencies": {
     "d3": "^7.9.0",
     "jsdom": "^24.1.1"

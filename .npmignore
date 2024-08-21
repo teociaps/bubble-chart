@@ -1,0 +1,6 @@
+src/
+tests/
+.github/
+coverage/
+rollup.config.js
+jest.config.cjs
