@@ -1,0 +1,41 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-color: rgb(41, 36, 36);
+}
+
+svg {
+  background-color: transparent;
+  border: 1px solid #ccc;
+}
+.svg--defs {
+  width: 0;
+  height: 0;
+  border: none;
+}
+
+/* .bubble { */
+  /* fill: steelblue; */
+  /* opacity: 0.7; */
+  /* stroke: black; */
+  /* stroke-width: 1px; */
+/* } */
+
+/* .bubble:hover { */
+  /* fill: orange; */
+/* } */
+
+.bc-title {
+  text-shadow: 0 0 2px black;
+  filter: drop-shadow(2px 4px 6px black);
+  /* text-anchor: middle; */
+}
+
+.b-percentage {
+  text-shadow: 0 0 2px black;
+  filter: drop-shadow(1px 1px 4px black);
+  font-family: 'Courier New', Courier, monospace;
+}

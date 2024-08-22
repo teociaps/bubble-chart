@@ -2,5 +2,6 @@ src/
 tests/
 .github/
 coverage/
+demo/
 rollup.config.js
 jest.config.cjs
