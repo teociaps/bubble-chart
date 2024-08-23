@@ -113,8 +113,8 @@ npm run start:demo
 
 
 ## Contributing
-If you'd like to contribute to the project, please submit a pull request or open an issue on the GitHub repository.
+If you'd like to contribute to the project, please submit a [pull request](https://github.com/teociaps/bubble-chart/compare) or open an [issue](https://github.com/teociaps/bubble-chart/issues/new) on the GitHub repository.
 
 
 ## License
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the MIT License. See the [License](LICENSE) file for details.
