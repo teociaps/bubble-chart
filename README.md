@@ -117,4 +117,4 @@ If you'd like to contribute to the project, please submit a [pull request](https
 
 
 ## License
-This project is licensed under the MIT License. See the [License](LICENSE.md) file for details.
+This project is licensed under the MIT License. See the [License](LICENSE) file for details.
