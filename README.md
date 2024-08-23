@@ -84,7 +84,7 @@ createBubbleChart(data, options, '#chart-container');
 
 ### Customization
 You can customize the chart appearance by adjusting the chartOptions and titleOptions. The library also includes a createSVGDefs function that you can use to define SVG gradients and masks.
-
+You can also change the style of your bubble chart through the CSS, like in the demo.
 
 ## Development
 ### Running Tests
