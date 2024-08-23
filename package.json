@@ -2,13 +2,15 @@
   "name": "@teociaps/bubble-chart",
   "version": "0.0.1",
   "description": "Create custom animated bubble charts",
-  "main": "dist/bundle.js",
+  "main": "dist/bundle.cjs.js",
+  "module": "dist/bundle.esm.js",
   "types": "dist/index.d.ts",
   "type": "module",
   "scripts": {
     "build": "rollup -c",
     "start": "rollup -c -w",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "start:demo": "http-server -o demo/"
   },
   "keywords": [
     "bubble-chart",
@@ -33,6 +35,7 @@
     "@types/d3": "^7.4.3",
     "@types/jest": "^29.5.12",
     "@types/node": "^22.0.2",
+    "http-server": "^14.1.1",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "rollup": "^4.19.2",

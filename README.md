@@ -1,10 +1,13 @@
 # @teociaps/bubble-chart
 
+![npm version](https://img.shields.io/npm/v/@teociaps/bubble-chart)
+[![CI](https://github.com/teociaps/bubble-chart/actions/workflows/ci.yml/badge.svg)](https://github.com/teociaps/bubble-chart/actions/workflows/ci.yml)
+
 **@teociaps/bubble-chart** is a library for creating custom animated bubble charts using **D3.js**. This package provides a flexible and customizable way to visualize data in a *bubble chart* format, with support for *animations* and *dynamic* styling.
 
-## Installation
 
-NPM:
+## Installation
+npm:
 ```bash
 npm install @teociaps/bubble-chart
 ```
@@ -13,15 +16,24 @@ Yarn:
 yarn add @teociaps/bubble-chart
 ```
 
+
 ## Usage
 ### Importing the Library
-To use the bubble chart functionality, import it into your project as follows:
 
+#### ES Modules (ESM)
+If you're using ES Modules (e.g., in a modern JavaScript project or in a TypeScript environment), you can import the library like this:
 ```typescript
 import { createBubbleChart, BubbleData, BubbleChartOptions } from '@teociaps/bubble-chart';
 ```
 
+#### CommonJS (CJS)
+If you're working in a Node.js environment or any project using CommonJS modules, you can require the library like this:
+```typescript
+const { createBubbleChart } = require('@teociaps/bubble-chart');
+```
+
 ### Creating a Bubble Chart
+This library includes TypeScript definitions. When using TypeScript, you'll benefit from type-checking and autocompletion.
 Here's a basic example of how to create a bubble chart:
 
 ```typescript
@@ -50,15 +62,14 @@ createBubbleChart(data, options, '#chart-container');
 
 ### Parameters
 - data (BubbleData[]): An array of objects representing each bubble. Each object should have the following properties:
-
   - name (string): The name or label of the bubble.
   - value (number): The value that determines the size of the bubble.
   - color (string): The color of the bubble.
   - icon (optional string): URL of an icon to be displayed inside the bubble.
-- chartOptions (BubbleChartOptions): Options for customizing the chart. This includes:
 
-- titleOptions (TitleOptions): Options for the chart title.
-  - text (optional string): Title text.
+- chartOptions (BubbleChartOptions): Options for customizing the chart. This includes:
+  - titleOptions (TitleOptions): Options for the chart title.
+    - text (optional string): Title text.
   - fontSize (optional string): Font size of the title.
   - fontWeight (optional string): Font weight of the title.
   - fill (optional string): Font color of the title.
@@ -73,6 +84,7 @@ createBubbleChart(data, options, '#chart-container');
 
 ### Customization
 You can customize the chart appearance by adjusting the chartOptions and titleOptions. The library also includes a createSVGDefs function that you can use to define SVG gradients and masks.
+
 
 ## Development
 ### Running Tests
@@ -93,8 +105,16 @@ To build and watch for changes during development, use:
 npm start
 ```
 
+### Running the Demo Locally
+Start a local server to view the demo:
+```bash
+npm run start:demo
+```
+
+
 ## Contributing
 If you'd like to contribute to the project, please submit a pull request or open an issue on the GitHub repository.
+
 
 ## License
 This project is licensed under the MIT License. See the LICENSE file for details.

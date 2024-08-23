@@ -1,3 +1,5 @@
+import { createBubbleChart } from '../dist/bundle.esm.js';
+
 // Example:
 const data = [
   { name: 'JavaScript', value: 100, color: 'yellow', icon: 'https://icon.icepanel.io/Technology/svg/JavaScript.svg' },

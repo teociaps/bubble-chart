@@ -5,11 +5,17 @@ import { terser } from 'rollup-plugin-terser';
 
 export default {
   input: 'src/index.ts',
-  output: {
-    file: 'dist/bundle.js',
-    format: 'iife', // for browser compatibility
-    name: 'BubbleChart'
-  },
+  output: [
+    {
+      file: 'dist/bundle.cjs.js',
+      format: 'cjs',
+      exports: 'named',
+    },
+    {
+      file: 'dist/bundle.esm.js',
+      format: 'esm',
+    }
+  ],
   plugins: [
     resolve(),
     commonjs(),
