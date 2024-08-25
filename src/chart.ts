@@ -7,9 +7,9 @@ import { createSVGDefs } from './defs';
 export const createBubbleChart = (
   data: BubbleData[], 
   chartOptions: BubbleChartOptions, 
-  selector: string = 'body', 
   width: number = 800, 
-  height: number = 600
+  height: number = 600,
+  selector?: string
 ): string | null => { 
   
   if (data.length == 0)
@@ -36,12 +36,12 @@ export const createBubbleChart = (
   const titleHeight = 40; // Height reserved for the title text
   const maxAnimationOffset = 20; // Maximum offset introduced by the animation
 
-  const svg = d3.select(selector)
-    .append('svg')
+  const svg = d3.create('svg')
+    .attr('xmlns', 'http://www.w3.org/2000/svg')
     .attr('width', '100%')
     .attr('viewBox', `0 0 ${width} ${baseHeight + titleHeight}`)
     .attr('preserveAspectRatio', 'xMidYMid meet');
-
+  
   createSVGDefs(svg);
 
   // SVG title with customizable styles
@@ -165,26 +165,6 @@ export const createBubbleChart = (
   });
   
   // TODO: choose animation or make it customizable(?)
-
-  // 1st version:
-  // // Add floating animation
-  // function animateBubbles() {
-  //   node.transition()
-  //     .duration(() => Math.random() * 2000 + 3000) // Random duration between 2000 and 5000ms
-  //     .ease(d3.easeLinear) // Linear easing for fluid motion
-  //     .attr('transform', d => {
-  //       const offsetX = Math.random() * 20 - 10; // Random x offset between -10 and 10
-  //       const offsetY = Math.random() * 20 - 10; // Random y offset between -10 and 10
-  //       return `translate(${d.x + offsetX},${d.y + offsetY})`;
-  //     })
-  //     .on('end', function() {
-  //       d3.select(this).call(animateBubbles); // Repeat the animation
-  //     });
-  // }
-
-  // animateBubbles();
-
-  // 2nd version:
   function animateBubbles() {
     bubbles.each(function (d: any) {
       d.xOffset = Math.random() * 2 - 1;
@@ -203,7 +183,7 @@ export const createBubbleChart = (
           return `translate(${d.x + offsetX},${d.y + offsetY})`;
         })
         .on('end', function() {
-          d3.select(this).call(animateBubbles); // Repeat the animation
+          d3.select(this).call(animateBubbles);
         });
     }
 
@@ -212,5 +192,9 @@ export const createBubbleChart = (
 
   animateBubbles();
 
+  if (selector) {
+    d3.select(selector).append(() => svg.node());
+  }
+  
   return svg.node()?.outerHTML || '';
 };

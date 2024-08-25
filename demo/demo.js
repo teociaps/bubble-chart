@@ -23,7 +23,7 @@ const customBubbleChartOptions = {
   showPercentages: true
 };
 
-// Generate the SVG content
-const svgContent = createBubbleChart(data, customBubbleChartOptions, 'body', 1000, 700);
+// Generate the SVG content and append it to the body
+const svgContent = createBubbleChart(data, customBubbleChartOptions, 1000, 700, 'body');
 
 console.log(svgContent);

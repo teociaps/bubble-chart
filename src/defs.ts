@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 
-export const createSVGDefs = (svg: d3.Selection<SVGSVGElement, unknown, HTMLElement, any>) => {
+export const createSVGDefs = (svg: d3.Selection<SVGSVGElement, undefined, null, undefined>) => {
   const createRadialGradient = (id: string, coordinates: { fx: string, fy: string }, stops: { offset: string, color: string, opacity?: number }[]) => {
     const gradient = svgDefs.append('radialGradient')
       .attr('id', id)

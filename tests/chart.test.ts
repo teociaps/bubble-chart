@@ -66,4 +66,16 @@ describe('Bubble Chart', () => {
 
     expect(svgContent).toBe(null);
   });
+
+  test('should append the SVG only if a valid selector is provided', () => {
+    document.body.innerHTML = '<div id="valid-container"></div>';
+
+    createBubbleChart(data, customBubbleChartOptions, undefined, undefined, '#valid-container');
+    expect(document.querySelector('#valid-container svg')).not.toBeNull();
+
+    // Ensure SVG is not appended when an invalid selector is provided
+    createBubbleChart(data, customBubbleChartOptions, undefined, undefined, '#invalid-container');
+    expect(document.querySelector('#invalid-container svg')).toBeNull();
+  });
+
 });
