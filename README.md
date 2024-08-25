@@ -1,6 +1,6 @@
 # @teociaps/bubble-chart
 
-![npm version](https://img.shields.io/npm/v/@teociaps/bubble-chart)
+[![npm version](https://img.shields.io/npm/v/@teociaps/bubble-chart)](https://www.npmjs.com/package/@teociaps/bubble-chart)
 [![CI](https://github.com/teociaps/bubble-chart/actions/workflows/ci.yml/badge.svg)](https://github.com/teociaps/bubble-chart/actions/workflows/ci.yml)
 
 **@teociaps/bubble-chart** is a library for creating custom animated bubble charts using **D3.js**. This package provides a flexible and customizable way to visualize data in a *bubble chart* format, with support for *animations* and *dynamic* styling.
@@ -33,7 +33,7 @@ const { createBubbleChart } = require('@teociaps/bubble-chart');
 ```
 
 ### Creating a Bubble Chart
-This library includes TypeScript definitions. When using TypeScript, you'll benefit from type-checking and autocompletion.
+This library includes TypeScript definitions.
 Here's a basic example of how to create a bubble chart:
 
 ```typescript
@@ -57,7 +57,7 @@ const options: BubbleChartOptions = {
 };
 
 // Create bubble chart
-createBubbleChart(data, options, '#chart-container');
+let generatedSvg = createBubbleChart(data, options, 800, 600, '#chart-container');
 ```
 
 ### Parameters
@@ -76,15 +76,15 @@ createBubbleChart(data, options, '#chart-container');
   - padding (optional object): Padding around the title. Format { top?: number, right?: number, bottom?: number, left?: number }.
   - showPercentages (optional boolean): Whether to display percentages inside bubbles.
 
-- selector (string): CSS selector for the element to which the SVG will be appended. Defaults to 'body'.
-
 - width (number): Width of the SVG container. Defaults to 800.
 
 - height (number): Height of the SVG container. Defaults to 600.
 
+- selector (optional string): CSS selector for the element to which the SVG will be appended. Leave out to only generate and return the SVG without appending it to your document.
+
 ### Customization
 You can customize the chart appearance by adjusting the chartOptions and titleOptions. The library also includes a createSVGDefs function that you can use to define SVG gradients and masks.
-You can also change the style of your bubble chart through the CSS, like in the demo.
+In addition, you can change the style of your bubble chart through the CSS, like in the demo, or manipulate the generated SVG string from the createBubbleChart function.
 
 ## Development
 ### Running Tests
